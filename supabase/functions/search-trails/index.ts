@@ -1,6 +1,7 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { mapOsmTrails } from "../_shared/mapOsmTrails.ts";
+import { buildNominatimSearchUrl } from "../_shared/nominatimSearchUrl.ts";
 import type {
   CommonsPhoto,
   OsmElement,
@@ -315,18 +316,16 @@ async function geocodePostalCode(
     setTimeout(resolve, Math.max(0, waitMilliseconds)),
   );
 
-  const url = new URL(
+  const contactEmail = Deno.env.get("NOMINATIM_EMAIL")?.trim();
+  if (!contactEmail) {
+    throw new Error("The NOMINATIM_EMAIL Edge Function secret is not configured.");
+  }
+  const url = buildNominatimSearchUrl(
     Deno.env.get("NOMINATIM_URL") ??
       "https://nominatim.openstreetmap.org/search",
+    postalCode,
+    contactEmail,
   );
-  url.search = new URLSearchParams({
-    postalcode: postalCode,
-    country: "United States",
-    countrycodes: "us",
-    format: "jsonv2",
-    addressdetails: "1",
-    limit: "1",
-  }).toString();
 
   const response = await fetch(url, {
     headers: {

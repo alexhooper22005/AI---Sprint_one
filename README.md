@@ -47,8 +47,11 @@ this repository cannot create a cloud project or access your account for you.
    corepack pnpm dlx supabase db push
    corepack pnpm dlx supabase functions deploy search-trails
    ```
-
-5. Create your local Vite environment file:
+5. In the Supabase dashboard, open **Edge Functions → Secrets** and add
+   `NOMINATIM_EMAIL` with a contact email for this project. Nominatim uses this
+   to contact the application owner about usage. Do not put it in a `VITE_`
+   variable or commit it to the repository.
+6. Create your local Vite environment file:
 
    ```bash
    cp .env.example .env.local
@@ -57,7 +60,7 @@ this repository cannot create a cloud project or access your account for you.
    Put the **Project URL** in `VITE_SUPABASE_URL` and the legacy **anon** key
    in `VITE_SUPABASE_ANON_KEY` in `.env.local`. This file is ignored by Git.
    Never use the `service_role`/secret key in a `VITE_` variable.
-6. Restart `corepack pnpm dev`, enter a ZIP code, and select **Search ZIP
+7. Restart `corepack pnpm dev`, enter a ZIP code, and select **Search ZIP
    code**. Use the activity filters to narrow the trails without another API
    request.
 
